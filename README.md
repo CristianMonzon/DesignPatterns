@@ -250,6 +250,100 @@ Permite añadir lógica adicional (seguridad, logs, cache, lazy loading) sin mod
 - Cumple SRP (Single Responsibility Principle): el objeto real no se preocupa por seguridad, logs o cache.  
 
 
+# 🧩 10. Chain of Responsibility
+
+### 🎯 Idea principal  
+Chain of Responsibility permite procesar una petición a través de una **cadena de handlers independientes**, donde cada uno decide si:
+
+- maneja la petición  
+- o la delega al siguiente handler  
+
+El cliente no conoce la estructura de la cadena ni cuántos handlers la componen.  
+La petición fluye paso a paso hasta que alguien la resuelve.
+
+### 🧠 En este proyecto  
+- El sistema trabaja con un `MensajeContexto` que contiene usuario, fecha e importancia.  
+- Cada validación es un handler independiente:  
+  - `ValidarUsuarioHandler`  
+  - `ValidarFechaHandler`  
+  - `ValidarImportanciaHandler`  
+- `GenerarMensajeHandler` es el último eslabón de la cadena.  
+- La cadena se construye explícitamente usando `SetNext()`.  
+- Cada handler valida su parte y decide si continúa o detiene la cadena.  
+- El cliente solo conoce el primer handler (`ValidarUsuarioHandler`).  
+
+### ✔ Ventajas  
+- Desacopla el cliente de la lógica de validación.  
+- Permite añadir, quitar o reordenar handlers sin modificar el cliente.  
+- Cada handler tiene una única responsabilidad (SRP).  
+- Evita condicionales anidados o enormes bloques `if/else`.  
+- Facilita pruebas unitarias por handler.  
+- Cumple OCP (Open/Closed Principle): puedes añadir nuevas validaciones sin tocar las existentes.  
+
+
+# ⚔️ 11. Command
+
+### 🎯 Idea principal  
+Command encapsula una **acción como un objeto independiente**.  
+Permite ejecutar, deshacer, almacenar o encolar operaciones sin que el cliente conozca cómo se realizan.
+
+### 🧠 En este proyecto  
+- `ICommand` define las operaciones `Execute()` y `Undo()`.  
+- `EnviarMensajeCommand` implementa `ICommand` y representa una acción concreta.  
+- El comando contiene los datos necesarios y una referencia al receptor.  
+- `MensajeReceiver` ejecuta la lógica real (enviar y deshacer el mensaje).  
+- El invocador solo conoce la interfaz `ICommand`, no la implementación del comando ni del receptor.
+
+### ✔ Ventajas  
+- Encapsula acciones como objetos reutilizables.  
+- Permite Undo/Redo de forma natural.  
+- Desacopla quién solicita la acción de quién la ejecuta.  
+- Facilita colas de comandos, logs y macros.  
+- Cumple SRP (Single Responsibility Principle) : cada comando tiene una única responsabilidad.  
+- Cumple OCP (Open/Closed Principle): puedes añadir nuevos comandos sin modificar código existente.
+
+
+# 🧾 12. Interpreter
+
+### 🎯 Idea principal  
+Interpreter define una gramática y permite evaluar reglas construyendo un **árbol de expresiones**.  
+Cada expresión sabe cómo interpretarse sobre un contexto.
+
+### 🧠 En este proyecto  
+- `IExpresion` define el método `Interpretar()`.  
+- Las expresiones terminales evalúan reglas simples (usuario, importancia, etc.).  
+- Las expresiones no terminales combinan reglas (AND, OR).  
+- El cliente construye el árbol de expresiones y lo evalúa sobre un `MensajeContexto`.
+
+### ✔ Ventajas  
+- Permite definir reglas como objetos reutilizables.  
+- Facilita crear mini-lenguajes internos (DSL).  
+- Las reglas pueden combinarse para formar expresiones complejas.  
+- Cumple OCP: puedes añadir nuevas expresiones sin modificar las existentes.
+
+
+# 🔁 13. Iterator
+
+### 🎯 Idea principal  
+Iterator permite recorrer una colección **sin exponer su estructura interna**.  
+El iterador encapsula el estado del recorrido y ofrece una forma uniforme de avanzar por los elementos.
+
+### 🧠 En este proyecto  
+- `IIterator<T>` define `HasNext()` y `Next()`.  
+- `IColeccion<T>` define `CrearIterador()`.  
+- `ColeccionDeMensajesDeBienvenida` almacena mensajes explicativos.  
+- `MensajeIterator` controla la iteración interna.  
+- El cliente recorre los mensajes sin conocer cómo están almacenados.
+
+### ✔ Ventajas  
+- Oculta la estructura interna de la colección.  
+- Permite múltiples iteradores simultáneos.  
+- Facilita cambiar la forma de recorrer sin modificar el cliente.  
+- Cumple SRP (la colección no gestiona la iteración).  
+- Cumple OCP (puedes añadir nuevos iteradores sin tocar el cliente).
+
+---
+
 # ▶ Ejecución
 
 Cada patrón tiene su propio ejemplo en `Program.cs` o en su carpeta correspondiente.  
