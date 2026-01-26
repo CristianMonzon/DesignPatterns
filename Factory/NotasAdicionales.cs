@@ -1,12 +1,11 @@
 ﻿using Factory;
-
-public class ExplicacionFactoryMethod : UsuarioBase
+public class NotasAdicionales : UsuarioBase
 {
     public readonly IMensajeDeBienvenida mensajeDeBienvenida;
 
-    public ExplicacionFactoryMethod()
+    public NotasAdicionales()
     {
-        mensajeDeBienvenida = new ExplicacionFactoryMethodMensaje();
+        mensajeDeBienvenida = new NotasAdicionalesMensaje();
     }
 
     public override IMensajeDeBienvenida CrearMensaje()
@@ -15,16 +14,16 @@ public class ExplicacionFactoryMethod : UsuarioBase
     }
 }
 
-public class ExplicacionFactoryMethodMensaje : IMensajeDeBienvenida
+public class NotasAdicionalesMensaje : IMensajeDeBienvenida
 {
     public string GetMessage()
     {
         return
-            "Este ejemplo implementa Factory Method porque:\n" +
-            "- La clase base UsuarioBase define un método abstracto CrearMensaje().\n" +
-            "- Las subclases (UsuarioA, UsuarioB, UsuarioC) deciden qué mensaje concreto crear.\n" +
-            "- El código cliente no conoce las clases concretas de los mensajes.\n" +
-            "- Se cumple el principio de inversión de dependencias y OCP.\n" +
-            "- Puedes crear nuevas clases que hereden de UsuarioBase (por ejemplo, UsuarioD) y nuevos mensajes (como ExplicacionMensajeUsuarioBase) sin modificar el código existente.\n";
+            "Notas adicionales:\n" +
+            "- Las subclases (UsuarioA, UsuarioB, UsuarioC) podrían recibir la interfaz IMensajeDeBienvenida mediante inyección de dependencias.\n" +
+            "- En ese caso, la creación del mensaje ya no dependería de la subclase, sino del código cliente.\n" +
+            "- Este enfoque transforma el comportamiento en una estrategia intercambiable, lo que nos lleva al patrón Strategy.\n" +
+            "- Esto demuestra cómo un mismo diseño puede evolucionar hacia distintos patrones según dónde situemos la responsabilidad de creación.\n" +
+            "- La escencia del patrón es :'Cada objeto es responsable de crear su propia copia'.\n";
     }
 }

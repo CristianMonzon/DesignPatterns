@@ -22,8 +22,13 @@ Console.WriteLine();
 Console.WriteLine();
 
 {
-    var explicacion = new ExplicacionCompositeMensaje();
-    Console.WriteLine(explicacion.GetMessage());
+    IMensajeDeBienvenida explicacionCompositeMensaje = new ExplicacionCompositeMensaje();
+    IMensajeDeBienvenida notasAdicionales = new NotasAdicionales();
+
+    MensajeCompuesto mensajeCompuesto = new MensajeCompuesto();
+    mensajeCompuesto.Add(explicacionCompositeMensaje);
+    mensajeCompuesto.Add(notasAdicionales);
+    Console.WriteLine(mensajeCompuesto.GetMessage());
 }
 
 Console.WriteLine("Fin del patrón Composite.");
