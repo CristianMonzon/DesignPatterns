@@ -127,6 +127,7 @@ Bridge evita la explosión de clases que ocurre cuando intentas combinar múltip
 Aquí tienes la sección **Composite** con el **mismo estilo, estructura y simplicidad** que tu sección de Bridge.  
 Lista para pegar en tu README.
 
+
 # 🌳 7. Composite
 
 ### 🎯 Idea principal  
@@ -143,9 +144,110 @@ Composite es ideal para construir estructuras jerárquicas (tipo árbol) donde u
 ### ✔ Ventajas  
 - Permite construir estructuras jerárquicas sin cambiar el código cliente.  
 - El cliente trata objetos simples y compuestos de forma uniforme.  
-- Facilita añadir nuevos tipos de mensajes sin modificar código existente (OCP).  
+- Facilita añadir nuevos tipos de mensajes sin modificar código existente OCP (Open/Closed Principle).   
 - Evita condicionales del tipo “si es simple haz esto, si es compuesto haz lo otro”.  
 - Muy útil para representar estructuras parte–todo (carpetas/archivos, menús/submenús, grupos de mensajes, etc.).
+
+
+# 🎨 8. Decorator
+
+### 🎯 Idea principal  
+Permite **añadir responsabilidades adicionales a un objeto de forma dinámica**, sin modificar su clase original.  
+Un decorador envuelve un objeto y añade comportamiento antes o después de delegar la llamada.
+
+Es una alternativa flexible a la herencia cuando quieres extender comportamiento sin crear una explosión de subclases.
+
+### 🧠 En este proyecto  
+- El componente base es la interfaz **`IMensajeDeBienvenida`**.  
+- El mensaje original se representa con **`MensajeSimple`**.  
+- Los decoradores implementan la misma interfaz y envuelven un mensaje existente.  
+- Cada decorador añade una responsabilidad extra:
+  - `DecoradorConFecha` → añade la fecha actual  
+  - `DecoradorMayusculas` → convierte el texto a mayúsculas  
+  - `DecoradorConPrefijo` → añade un prefijo  
+- Los decoradores se aplican en cadena, uno encima del otro.
+- El cliente no necesita saber cuántos decoradores hay ni en qué orden están aplicados.
+
+### ✔ Ventajas  
+- Añade funcionalidades sin modificar la clase original.  
+- Evita crear subclases como `MensajeMayusculas`, `MensajeConPrefijo`, `MensajeMayusculasConFecha`, etc.  
+- Los decoradores pueden combinarse dinámicamente en tiempo de ejecución.  
+- Cumple OCP(Open/Closed Principle): puedes añadir nuevos decoradores sin modificar código existente.  
+- Cumple DIP(Dependency Inversion Principle): los decoradores dependen de la abstracción, no de implementaciones concretas.  
+- Permite construir comportamientos complejos a partir de piezas simples.
+
+
+# 🏛️ 7. Façade
+
+### 🎯 Idea principal  
+Proporciona una **interfaz simple y unificada** para acceder a un **subsistema complejo**.  
+En lugar de que el cliente tenga que interactuar con múltiples clases, dependencias y pasos internos, la fachada expone un único método de alto nivel que encapsula toda la complejidad.
+
+### 🧠 En este proyecto  
+- El subsistema está compuesto por varias clases internas:  
+  `ValidadorDeUsuario`, `GeneradorDeTextoDeBienvenida`,  
+  `CalculadorDeImportancia`, `FormateadorDeMensaje`, `LoggerDeAccesos`.  
+- Cada clase realiza una tarea específica y el cliente **no debería conocerlas ni coordinarlas**.  
+- La fachada (`BienvenidaFacade`) expone un único método:  
+  `CrearBienvenida(usuario)`.  
+- La fachada valida, genera el texto, calcula la importancia, formatea el mensaje y registra el acceso.  
+- El cliente recibe directamente un `IMensajeDeBienvenida` completamente preparado.  
+- El subsistema puede cambiar internamente sin afectar al cliente.
+
+### ✔ Ventajas  
+- Simplifica el uso de un subsistema complejo.  
+- Reduce el acoplamiento entre cliente y componentes internos.  
+- Protege al cliente de cambios internos en el subsistema.  
+- Mejora la claridad del código al encapsular procesos complejos.  
+- Cumple SRP (Single Responsibility Principle): la fachada es la única responsable de coordinar el flujo.  
+- Cumple OCP (Open/Closed Principle): el subsistema puede crecer sin modificar el código cliente.  
+- Facilita la creación de APIs limpias y fáciles de usar.
+
+
+# 🪶 8. Flyweight
+
+### 🎯 Idea principal  
+Reduce el **uso de memoria** compartiendo objetos **inmutables y repetidos** entre múltiples instancias.  
+Flyweight evita crear miles de objetos idénticos, reutilizando uno solo y almacenando únicamente la parte **intrínseca** (compartida), mientras que la parte **extrínseca** (variable) se pasa desde fuera.
+
+### 🧠 En este proyecto  
+- Muchos mensajes pueden compartir información común:  
+  por ejemplo, el **formato base**, el **prefijo**, o una **plantilla de texto**.  
+- Esa parte común es **intrínseca** y se guarda en objetos Flyweight (`MensajeFlyweight`).  
+- La parte variable (usuario, fecha, importancia) es **extrínseca** y se pasa desde fuera.  
+- El `MensajeFlyweightFactory` garantiza que si dos mensajes usan la misma plantilla, se reutiliza el mismo objeto Flyweight.  
+- El cliente no crea Flyweights directamente: siempre los solicita a la fábrica.  
+- Esto reduce drásticamente la creación de objetos repetidos y optimiza memoria.
+
+### ✔ Ventajas  
+- Reduce el consumo de memoria cuando hay muchos objetos similares.  
+- Evita duplicar información inmutable o repetida.  
+- Centraliza la creación y reutilización de objetos mediante una fábrica.  
+- Cumple OCP (Open/Closed Principle): puedes añadir nuevos tipos de Flyweight sin modificar los existentes.  
+- Cumple SRP (Single Responsibility Principle): la fábrica es la única responsable de gestionar la reutilización.  
+- Ideal para sistemas con miles de elementos repetidos (textos, iconos, nodos, caracteres, etc.).
+
+
+# 🛡️ 9. Proxy
+
+### 🎯 Idea principal  
+Proxy actúa como un **intermediario** que controla el acceso a un objeto real.  
+Permite añadir lógica adicional (seguridad, logs, cache, lazy loading) sin modificar el objeto real.
+
+### 🧠 En este proyecto  
+- El sistema trabaja con `IMensajeDeBienvenida`.  
+- `MensajeReal` es el objeto costoso que genera el mensaje.  
+- `MensajeProxy` controla el acceso al objeto real.  
+- El proxy crea el objeto real solo cuando es necesario (lazy loading).  
+- El cliente no sabe si está usando el proxy o el objeto real.  
+- El proxy puede añadir logs, validaciones o cache sin modificar `MensajeReal`.
+
+### ✔ Ventajas  
+- Controla el acceso a objetos costosos o sensibles.  
+- Permite lazy loading (crear el objeto solo cuando se necesita).  
+- Añade funcionalidades sin modificar el objeto real.  
+- Cumple OCP (Open/Closed Principle): puedes añadir nuevos proxies sin tocar el código existente.  
+- Cumple SRP (Single Responsibility Principle): el objeto real no se preocupa por seguridad, logs o cache.  
 
 
 # ▶ Ejecución
@@ -155,3 +257,4 @@ Puedes ejecutar el proyecto y ver en consola:
 
 - El mensaje generado por cada patrón  
 - La explicación del patrón  
+- Notas adicionales explicando el patrón  
