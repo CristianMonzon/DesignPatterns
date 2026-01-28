@@ -36,8 +36,7 @@ Console.WriteLine();
 {
     var explicacionInterpreter = new ExplicacionInterpreter();
     Console.WriteLine(explicacionInterpreter.GetMessage());
-}
-{
+
     var notasAdicionales = new NotasAdicionales();
     Console.WriteLine(notasAdicionales.GetMessage());
 }

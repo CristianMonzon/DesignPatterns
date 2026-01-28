@@ -1,20 +1,23 @@
-# 🧩 Patrones de Diseño en C# — Ejemplos Didácticos  
-Este repositorio contiene una colección de ejemplos prácticos y didácticos de **cuatro patrones de creación** del catálogo GoF, todos implementados con un dominio común: **Usuarios y Mensajes**.
+# 🧩 Patrones de Diseño en C# — Ejemplos Didácticos
 
-El objetivo es mostrar **cómo se diferencian**, **cuándo usarlos** y **cómo se implementan** de forma clara, extensible y mantenible.
+Este repositorio reúne una colección creciente de **patrones de diseño del catálogo GoF (Gang of Four)**, implementados en C# con un dominio común basado en **Usuarios y Mensajes**.
 
-## 📚 Patrones incluidos
+El objetivo es ofrecer ejemplos **claros, prácticos y didácticos**, mostrando:
 
-- **Factory Method**  
-- **Abstract Factory**  
-- **Builder**  
-- **Prototype**
+- qué problema resuelve cada patrón  
+- cómo se implementa en C#  
+- cómo se diferencia de otros patrones  
+- cómo aplicarlo en un contexto realista  
+- cómo mantener el código extensible y mantenible  
 
 Cada patrón incluye:
-- Interfaces  
-- Implementaciones concretas  
+
+- Interfaces y clases concretas  
 - Ejemplo de uso  
-- Explicación del patrón integrada en el código  
+- Explicación integrada en el código  
+- Ventajas y motivación  
+- Implementación coherente con el dominio  
+
 
 # 🏭 1. Factory Method
 
@@ -319,7 +322,7 @@ Cada expresión sabe cómo interpretarse sobre un contexto.
 - Permite definir reglas como objetos reutilizables.  
 - Facilita crear mini-lenguajes internos (DSL).  
 - Las reglas pueden combinarse para formar expresiones complejas.  
-- Cumple OCP: puedes añadir nuevas expresiones sin modificar las existentes.
+- Cumple OCP (Open/Closed Principle): puedes añadir nuevas expresiones sin modificar las existentes.
 
 
 # 🔁 13. Iterator
@@ -339,8 +342,112 @@ El iterador encapsula el estado del recorrido y ofrece una forma uniforme de ava
 - Oculta la estructura interna de la colección.  
 - Permite múltiples iteradores simultáneos.  
 - Facilita cambiar la forma de recorrer sin modificar el cliente.  
-- Cumple SRP (la colección no gestiona la iteración).  
-- Cumple OCP (puedes añadir nuevos iteradores sin tocar el cliente).
+- Cumple SRP (Single Responsibility Principle): la colección no gestiona la iteración.  
+- Cumple OCP (Open/Closed Principle): puedes añadir nuevos iteradores sin tocar el cliente.
+
+
+# 🔁 14. Mediator
+
+### 🎯 Idea principal  
+Mediator centraliza la comunicación entre varios componentes para **evitar que se conozcan entre sí**.  
+En lugar de que los objetos colaboren directamente, delegan la coordinación en un mediador que decide qué hacer ante cada evento.
+
+### 🧠 En este proyecto  
+- `IMediator` define `Notificar(remitente, evento, datos)`.  
+- `EventoDeBienvenida` es un **enum** que tipa los eventos del flujo.  
+- `CentroDeCoordinacionMediator` coordina todo el proceso según el evento recibido.  
+- `RegistroDeUsuarios` dispara el evento inicial `UsuarioRegistrado`.  
+- `ValidadorDeUsuario` valida y notifica `UsuarioValidado` o `ErrorValidacion`.  
+- `GeneradorDeMensajes` crea el mensaje de bienvenida.  
+- `NotificadorDeUsuarios` envía el mensaje generado.  
+- `LoggerDeBienvenida` registra cada paso.  
+- Los componentes **no se conocen entre sí**; solo conocen al Mediator.
+
+### ✔ Ventajas  
+- Reduce el acoplamiento entre componentes.  
+- Centraliza la lógica de interacción en un único punto.  
+- Facilita modificar el flujo sin tocar los componentes.  
+- Permite añadir nuevos eventos sin romper el código existente.  
+- El enum evita errores de strings y mejora la escalabilidad.  
+
+
+# 🧩 15. Memento
+
+### 🎯 Idea principal  
+Memento permite **guardar y restaurar el estado interno de un objeto sin violar su encapsulación**.  
+Es ideal para implementar **Undo/Redo**, versiones o snapshots de objetos.
+
+### 🧠 En este proyecto  
+- `EditorDeMensajes` actúa como **Originator**: mantiene el estado del texto y sabe cómo guardarlo y restaurarlo.  
+- `MensajeMemento` es el **snapshot inmutable** que captura el estado del editor en un momento concreto.  
+- `HistorialDeMensajes` funciona como **Caretaker**, almacenando los estados sin conocer su contenido.  
+- El cliente puede escribir texto, guardar estados y deshacer cambios restaurando snapshots previos.
+
+### ✔ Ventajas  
+- Permite deshacer cambios sin exponer la estructura interna del objeto.  
+- Mantiene la encapsulación del estado.  
+- Facilita guardar versiones o snapshots.  
+- Cumple SRP (Single Responsibility Principle): la colección no gestiona la iteración.
+- Cumple OCP (Open/Closed Principle): puedes ampliar el estado sin modificar el historial.  
+
+
+# 🧩 16. Observer
+
+### 🎯 Idea principal  
+Observer permite que un objeto (**Subject**) notifique automáticamente a múltiples observadores (**Observers**) cuando su estado cambia.  
+Cada observador reacciona de forma independiente, sin que el Subject conozca sus detalles internos.
+
+### 🧠 En este proyecto  
+- `ColeccionDeMensajesDeBienvenida` actúa como **Subject**: almacena mensajes y notifica a los observadores cuando se agrega uno nuevo.  
+- `IObserver` define la interfaz común para todos los observadores.  
+- `LoggerObserver`, `ContadorObserver`, `AuditoriaObserver` y `UppercaseObserver` son **Observers concretos** que reaccionan al mensaje recibido.  
+- El cliente suscribe observadores y agrega mensajes; la colección se encarga de disparar las notificaciones.
+
+### ✔ Ventajas  
+- Reduce el acoplamiento: el Subject no conoce la lógica de los observadores.  
+- Permite añadir o quitar observadores sin modificar el Subject.  
+- Facilita la extensión del sistema con nuevos comportamientos reactivos.  
+- Mantiene un flujo claro: agregar un mensaje → notificar automáticamente.  
+- Encaja muy bien en sistemas basados en eventos, logs, auditoría o monitoreo.
+
+
+# 🧩 17. State
+
+### 🎯 Idea principal  
+El patrón **State** permite que un objeto modifique su comportamiento cuando cambia su estado interno.  
+Cada estado encapsula su propia lógica, evitando condicionales extensos y manteniendo el código más limpio y extensible.
+
+### 🧠 En este proyecto  
+- `IEstadoMensaje` define la interfaz común para todos los estados.  
+- `EstadoInicial`, `EstadoEnProceso`, `EstadoFinalizado` y `EstadoError` son **estados concretos**, cada uno con su propio comportamiento.  
+- `MensajeDeBienvenidaConEstado` actúa como **Contexto**, manteniendo el estado actual y delegando en él la generación del mensaje.  
+- El cliente cambia el estado manualmente para mostrar cómo varía el comportamiento del mensaje.
+
+### ✔ Ventajas  
+- Elimina `if` o `switch` basados en estados.  
+- Cada estado tiene una responsabilidad clara (alta cohesión).  
+- Permite agregar nuevos estados sin modificar el código existente (OCP).  
+- El comportamiento del objeto cambia de forma explícita y controlada.  
+- Ideal para procesos con etapas, flujos dinámicos o máquinas de estados.
+
+
+# 🧩 18. Strategy
+
+### 🎯 Idea principal  
+El patrón **Strategy** permite definir una familia de algoritmos, encapsularlos y hacerlos intercambiables.  
+El contexto delega el comportamiento en la estrategia seleccionada, evitando condicionales y facilitando la extensibilidad.
+
+### 🧠 En este proyecto  
+- `IStrategySaludo` define la interfaz común para todas las estrategias.  
+- `SaludoFormal`, `SaludoInformal` y `SaludoNavidad` son estrategias concretas.  
+- `MensajeDeBienvenidaConStrategy` actúa como contexto y delega el comportamiento en la estrategia actual.  
+- El cliente puede cambiar la estrategia en tiempo de ejecución.
+
+### ✔ Ventajas  
+- Evita condicionales extensos.  
+- Permite intercambiar algoritmos sin modificar el código del contexto.  
+- Facilita agregar nuevas estrategias sin tocar las existentes OCP (Open/Closed Principle).
+- Aumenta la cohesión y reduce el acoplamiento.
 
 ---
 
