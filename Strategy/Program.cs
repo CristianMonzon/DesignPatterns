@@ -4,19 +4,19 @@ Console.WriteLine("Patrón Strategy -> permite cambiar un algoritmo por otro en 
 Console.WriteLine();
 
 {
-    IStrategySaludo saludoFormal = new SaludoFormal();
+    IStrategySaludo estrategiaSaludoFormal = new SaludoFormal();
     
-    MensajeDeBienvenidaConStrategy mensaje = new MensajeDeBienvenidaConStrategy(saludoFormal);
+    MensajeDeBienvenidaConStrategy mensaje = new MensajeDeBienvenidaConStrategy(estrategiaSaludoFormal);
     Console.WriteLine(mensaje.GetMessage("Usuario A"));
 
     //Cambio la estrategia en modo de ejecución
-    var saludoInformal = new SaludoInformal();    
-    mensaje.CambiarStrategy(saludoInformal); 
+    IStrategySaludo estrategiaSaludoInformal = new SaludoInformal();    
+    mensaje.CambiarStrategy(estrategiaSaludoInformal); 
     Console.WriteLine(mensaje.GetMessage("Usuario A"));
 
     //Cambio la estrategia en modo de ejecución
-    var saludoNavidad = new SaludoNavidad();
-    mensaje.CambiarStrategy(saludoNavidad);
+    IStrategySaludo estrategiaSaludoNavidad = new SaludoNavidad();
+    mensaje.CambiarStrategy(estrategiaSaludoNavidad);
     Console.WriteLine(mensaje.GetMessage("Usuario A"));
 }
 

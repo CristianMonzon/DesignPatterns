@@ -1,5 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-using AbstractFactory;
+﻿using AbstractFactory;
+
 Console.WriteLine("Abstract Factory → Quiero crear familias completas de objetos.");
 
 var factoryA = new UsuarioAFactory();
@@ -13,6 +13,7 @@ Console.WriteLine(ExplicacionAbstractFactoryMethod.mensajeDeBienvenida.GetMessag
 
 Console.WriteLine();
 Console.WriteLine("Fin del patrón Abstract Factory.");
+
 
 void MostrarMensajes(IUsuarioFactory factory)
 {

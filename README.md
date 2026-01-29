@@ -439,7 +439,7 @@ El contexto delega el comportamiento en la estrategia seleccionada, evitando con
 
 ### 🧠 En este proyecto  
 - `IStrategySaludo` define la interfaz común para todas las estrategias.  
-- `SaludoFormal`, `SaludoInformal` y `SaludoNavidad` son estrategias concretas.  
+- `estrategiaSaludoFormal`, `estrategiaSaludoInformal` y `estrategiaSaludoNavidad` son estrategias concretas.  
 - `MensajeDeBienvenidaConStrategy` actúa como contexto y delega el comportamiento en la estrategia actual.  
 - El cliente puede cambiar la estrategia en tiempo de ejecución.
 
@@ -448,6 +448,55 @@ El contexto delega el comportamiento en la estrategia seleccionada, evitando con
 - Permite intercambiar algoritmos sin modificar el código del contexto.  
 - Facilita agregar nuevas estrategias sin tocar las existentes OCP (Open/Closed Principle).
 - Aumenta la cohesión y reduce el acoplamiento.
+
+
+# 🧩 20. Template Method
+
+## 🎯 Idea principal
+Template Method define el esqueleto de un algoritmo en una clase base.  
+Las subclases implementan o redefinen pasos concretos, pero la estructura general del proceso permanece fija.
+
+## 🧠 En este proyecto
+- `MensajeBienvenidaTemplate` define el flujo completo del mensaje:
+  1. Saludo inicial  
+  2. Cuerpo del mensaje  
+  3. Despedida  
+  4. Hook opcional  
+
+- `MensajeBienvenidaFormal` y `MensajeBienvenidaInformal` personalizan los pasos necesarios.
+- El cliente solo invoca `GenerarMensaje(nombre)`, no elige el algoritmo.
+
+## ✔ Ventajas
+- Reutiliza la estructura del algoritmo.
+- Evita duplicación de código.
+- Permite variaciones controladas del comportamiento.
+- Mantiene el flujo del proceso inalterado.
+
+
+# 🧩 21. Visitor
+
+## 🎯 Idea principal
+Visitor permite agregar operaciones nuevas a una jerarquía de clases **sin modificar los elementos existentes**.  
+Cada elemento acepta un visitante, y el visitante ejecuta la operación adecuada según el **tipo concreto** del elemento.  
+Este mecanismo se conoce como **doble despacho**.
+
+## 🧠 En este proyecto
+- Los elementos son distintos tipos de mensajes:
+  - MensajeBienvenidaFormal  
+  - MensajeBienvenidaInformal  
+  - MensajeBienvenidaNavidad  
+- Cada elemento expone un método `Aceptar`, que recibe un visitante y delega en él la operación correspondiente.
+- Los visitantes representan comportamientos que queremos aplicar sobre los mensajes:
+  - VisitanteImprimir  
+  - VisitanteContarCaracteres  
+- La interfaz del visitante define un método `Visitar` por cada tipo concreto de mensaje, permitiendo que el lenguaje seleccione automáticamente la operación correcta cuando el elemento ejecuta `visitante.Visitar(this)`.
+
+## ✔ Ventajas
+- Permite agregar operaciones nuevas sin modificar los elementos.
+- Mantiene la jerarquía de mensajes estable y cerrada a cambios.
+- Separa datos (elementos) de comportamientos (visitantes).
+- Evita condicionales del tipo `if (esFormal) ... else if (esInformal) ...`.
+- Facilita operaciones complejas sobre estructuras heterogéneas.
 
 ---
 
